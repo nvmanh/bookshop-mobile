@@ -1,10 +1,3 @@
-/**
- * @author Leo
- * @email xinlichao2016@gmail.com
- * @create date 2019-09-03 10:07:49
- * @modify date 2019-09-03 10:07:49
- * @desc 注册页，未完善
- */
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -25,25 +18,26 @@ import {
   Button,
   WhiteSpace,
   WingBlank,
+  Modal
 } from '@ant-design/react-native';
 import { Actions } from 'react-native-router-flux';
 import actions, { signUp } from '../../store/auth/actions';
 import { RootState } from '../../store/types';
 export interface Props {
   onBack: () => void;
-  onBackToHome: () => void;
+  onBackToSignIn: () => void;
 }
 let _loadKey: any = null;
 
 // TODO: Use KeyboardAvoidingView
-const SignupPage = ({ onBack, onBackToHome }: Props) => {
+const SignupPage = ({ onBack, onBackToSignIn }: Props) => {
 
   const dispatch = useDispatch();
   // const [form, setValues] = useState({
   //   userName: '',
   //   password: '',
   // });
-  const [username, setUsername] = useState('admin');
+  const [username, setUsername] = useState('admin01');
   const [password, setPassword] = useState('Aa@123456');
   const [seePwd, setSeePwd] = useState(false);
   const [age, setAge] = useState(18);
@@ -68,7 +62,7 @@ const SignupPage = ({ onBack, onBackToHome }: Props) => {
       }, 1);
       return;
     }
-    
+
     dispatch(signUp({ username, password, age, phone, email }));
   }
 
@@ -86,7 +80,15 @@ const SignupPage = ({ onBack, onBackToHome }: Props) => {
     }
     if (fetchSignUp.data) {
       // onBack();
-      onBackToHome();
+      // onBackToSignIn();
+      const _alert = Modal.alert;
+      _alert("Register", "Create account successfully, Do you want to login now?", [
+        { text: 'Later', style: 'default' },
+        { text: 'Login Now', onPress: () => onBackToSignIn() }
+      ])
+      setTimeout(() => {
+        // _alert.close();
+      }, 30000);
     }
   }, [fetchSignUp]);
 
@@ -175,15 +177,6 @@ const SignupPage = ({ onBack, onBackToHome }: Props) => {
             underlineColorAndroid="transparent"
           />
         </View>
-        {/* <TouchableOpacity
-          style={styles.btn}
-          onPress={onSignInPress}
-          textStyle={styles.btnText}
-        >
-          <Text>登录</Text>
-        </TouchableOpacity> */}
-
-
         <WingBlank>
           <WhiteSpace size='xl' />
           <WhiteSpace size='xl' />

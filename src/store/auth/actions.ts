@@ -1,10 +1,3 @@
-/**
- * @author Leo
- * @email xinlichao2016@gmail.com
- * @create date 2019-09-03 09:59:48
- * @modify date 2019-09-03 09:59:48
- * @desc 定义 Auth Api, Saga action, reducer action等。
- */
 import {
   composeTypes,
   createAction,
@@ -26,7 +19,6 @@ import { Types } from './types';
  |--------------------------------------------------
  */
 
-// 登录
 interface FetchSignInReq {
   username: string;
   password: string;
@@ -52,35 +44,37 @@ const fetchSignIn = createFetchAction(Types.fetchSignIn, fetchSignInUrl, Method.
 const fetchSignUpUrl = `${Network.API_ROOT_DOMAIN}/user/regist`;
 const fetchSignUp = createFetchAction(Types.fetchSignUp, fetchSignUpUrl, Method.Post)<FetchSignUpReq, FetchSignUpRes>('fetchSignUp');
 
-// 注销
 interface FetchLogoutReq {
 }
 export interface FetchLogoutRes {
 }
-const fetchLogoutUrl = `${Network.API_AUTH_URL}/logout`;
+const fetchLogoutUrl = `${Network.API_ROOT_DOMAIN}/logout`;
 const fetchLogout = createFetchAction(Types.fetchLogout, fetchLogoutUrl, Method.Post)<FetchLogoutReq, FetchLogoutRes>('fetchLogout');
 
-// 获取用户信息
 interface FetchUserInfoReq {
 }
 export interface FetchUserInfoRes {
   name: string;
 }
-const fetchUserInfoUrl = `${Network.API_AUTH_URL}/userInfo`;
+const fetchUserInfoUrl = `${Network.API_ROOT_DOMAIN}/me`;
 const fetchUserInfo = createFetchAction(Types.fetchUserInfo, fetchUserInfoUrl, Method.Get)<FetchUserInfoReq, FetchUserInfoRes>('fetchUserInfo');
 
 
-// 清空登录 fetch state
+// fetch state
 const clearFetchSignIn = createAction(Types.clearFetchSignIn)();
 
 const clearFetchSignUp = createAction(Types.clearFetchSignUp)();
 
 // change token
 const changeToken = createAction(Types.changeToken, 'token')<string>();
+
+const registerUserSuccess = createAction(Types.signUpSucces, "user")<object>();
+
 export default {
   changeToken,
   fetchSignIn,
   fetchSignUp,
+  registerUserSuccess,
   clearFetchSignIn,
   clearFetchSignUp,
   fetchLogout,

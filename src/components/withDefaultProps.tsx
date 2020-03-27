@@ -1,25 +1,3 @@
-
-/**
- * See https://juejin.im/post/5b07caf16fb9a07aa83f2977
- * TypeScript 2.8下的终极React组件模式 （未完善）
- * @param defaultProps 
- * @param Cmp 
- * @example
- * const defaultProps = {
- *   color: 'red',
- * };
- *
- * type DefaultProps = typeof defaultProps;
- * type Props = { onClick(e: MouseEvent<HTMLElement>): void } & DefaultProps;
- *
- * const Button: React.SFC<Props> = ({ onClick: handleClick, color, children }) => (
- *  <button style={{ color }} onClick={handleClick}>
- *    {children}
- *  </button>
- * );
- *
- * const ButtonWithDefaultProps = withDefaultProps(defaultProps, Button);
- */
 export const withDefaultProps = <
   P extends object,
   DP extends Partial<P> = Partial<P>
@@ -27,13 +5,13 @@ export const withDefaultProps = <
   defaultProps: DP,
   Cmp: ComponentType<P>
 ) => {
-  // 提取出必须的属性
+  // Extract required attributes
   type RequiredProps = Omit<P, keyof DP>;
-  // 重新创建我们的属性定义，通过一个相交类型，将所有的原始属性标记成可选的，必选的属性标记成可选的
+  // Re-create our attribute definition, mark all original attributes as optional, and mandatory attributes as optional through an intersection type
   type Props = Partial<DP> & Required<RequiredProps>;
 
   Cmp.defaultProps = defaultProps;
 
-  // 返回重新的定义的属性类型组件，通过将原始组件的类型检查关闭，然后再设置正确的属性类型
+  // Return the redefined property type component by turning off the type check of the original component before setting the correct property type
   return (Cmp as ComponentType<any>) as ComponentType<Props>;
 };

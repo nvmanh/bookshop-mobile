@@ -1,10 +1,3 @@
-/**
- * @author Leo
- * @email xinlichao2016@gmail.com
- * @create date 2019-09-03 10:01:44
- * @modify date 2019-09-03 10:01:44
- * @desc 定义 reducer，saga action type
- */
 import {
   composeTypes,
   createAction,
@@ -18,7 +11,7 @@ import {
 } from 'iron-redux';
 
 /**
- * 定义 types
+ * types
  */
 const prefix = 'auth/';
 
@@ -26,6 +19,7 @@ enum BasicTypes {
   changeToken,
   signIn,
   signUp,
+  signUpSucces,
   logout,
   clearFetchSignIn,
   clearFetchSignUp,

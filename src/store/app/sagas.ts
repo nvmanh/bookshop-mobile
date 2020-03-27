@@ -1,10 +1,3 @@
-/**
- * @author Leo
- * @email xinlichao2016@gmail.com
- * @create date 2019-09-03 09:58:14
- * @modify date 2019-09-03 09:58:14
- * @desc App Saga, 业务处理
- */
 import { takeLatest, call, put } from 'redux-saga/effects';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Types } from './types';
@@ -13,13 +6,13 @@ import actions, { initializeApp } from './actions';
 import authActions from '../auth/actions';
 
 /**
- * 初始化 app
+ *  app
  * @param action
  */
 function* initializeService(action: ReturnType<typeof initializeApp>) {
   const { payload } = action;
   try {
-    // 初始化 auth state
+    // auth state
     const token = yield AsyncStorage.getItem(CUSTOMER_TOKEN);
     yield put(authActions.changeToken(token));
 

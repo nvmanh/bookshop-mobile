@@ -1,10 +1,3 @@
-/**
- * @author Leo
- * @email xinlichao2016@gmail.com
- * @create date 2019-09-03 10:08:03
- * @modify date 2019-09-03 10:08:03
- * @desc 首页, 初始化App，登录验证等
- */
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { View, StyleSheet } from 'react-native';
@@ -26,27 +19,26 @@ const HomePage = ({ openSignin }: Props) => {
   const [currentToken, setCurrentToken] = useState<string | null>(null);
 
   useEffect(() => {
-    // 切换用户情况，重新刷新列表
+    // add token to store
     setCurrentToken(token);
 
-    // TODO: 需要触发列表更新，列表页
+    // TODO: Check if token is valid or not, if not refresh
     // dispatch(actions.changeListLastRefreshTime(Date.now()));
   }, [token]);
 
   useEffect(() => {
     // componentDidMount
-    // 初始化 app 相关
     dispatch(initializeApp());
 
-    // 验证是否登录
+    // Check if user logged in
     isLoggedIn().then((isLogged) => {
-      // 获取用户信息
+      // if logged move to main screen
       if (isLogged) {
         dispatch(getUserInfo());
       }
     });
 
-    // 延迟关闭闪屏, 体验更好
+    // hide splash screen
     setTimeout(() => {
       SplashScreen.hide();
     }, 300);
@@ -69,7 +61,7 @@ const HomePage = ({ openSignin }: Props) => {
     <WingBlank>
       <WhiteSpace />
       <Button type="primary" onPress={() => openSignin()}>
-        去登陆
+        Login
       </Button>
       <WhiteSpace />
     </WingBlank>

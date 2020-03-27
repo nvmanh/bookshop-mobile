@@ -1,10 +1,3 @@
-/**
- * @author Leo
- * @email xinlichao2016@gmail.com
- * @create date 2019-09-03 09:49:49
- * @modify date 2019-09-03 09:49:49
- * @desc 相册选择组件
- */
 import React, { PureComponent } from 'react';
 import { Platform } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -29,7 +22,7 @@ const iosOptions = {
   ...defaultOptions,
   maxFiles: 9, // Max number of files to select when using multiple option
   useFrontCamera: false, // Whether to default to the front/'selfie' camera when opened
-  loadingLabelText: '加载中...',
+  loadingLabelText: 'loading...',
 };
 
 const androidOptions = {
@@ -86,10 +79,10 @@ class CommonImagePicker extends PureComponent<Props, State> {
 
   private _openCamera() {
     const { multiple } = this._takePhotoOP;
-    this._takePhotoOP.multiple = false; // android 拍照不能给多选参数
+    this._takePhotoOP.multiple = false; // android 
     ImagePicker.openCamera(this._takePhotoOP).then(image => {
       if (multiple) {
-        this._takePhotoCB([image]); // 多选，返回数组
+        this._takePhotoCB([image]);
       } else {
         this._takePhotoCB(image);
       }
@@ -110,10 +103,10 @@ class CommonImagePicker extends PureComponent<Props, State> {
 
   private _handleActionSheet(index: number) {
     if (index === 1) {
-      // 打开相册
+      // gallery picker
       this._openPicker();
     } else if (index === 2) {
-      // 拍摄
+      // open camera
       this._openCamera();
     }
   }
@@ -125,7 +118,7 @@ class CommonImagePicker extends PureComponent<Props, State> {
         ref={o => {
           this.ActionSheet = o;
         }}
-        options={['取消', '从手机相册选择', '拍一张照片']}
+        options={['Cancel','Select from phone album','Take a photo']}
         cancelButtonIndex={0}
         onPress={this._handleActionSheet.bind(this)}
       />
@@ -134,21 +127,3 @@ class CommonImagePicker extends PureComponent<Props, State> {
 }
 
 export default CommonImagePicker;
-
-//  /**
-//    * 获取base64 文件类型 {image/jpg | image/gif | image/png}
-//    * @param  fileData
-//    * @return String
-//    */
-//   _getFileType = (file) => {
-//     let fileType = file.type;
-//     const fileTypeRegExp = /^image\/(jpg|gif|png|jpeg)$/i;
-//     if (!fileTypeRegExp.test(fileType)) {
-//       const uriRegExp = /\.(jpg|gif|png|jpeg)$/i;
-//       if (uriRegExp.test(file.uri)) {
-//         fileType = `image/${file.uri.match(uriRegExp)[1].toLowerCase()}`;
-//       }
-//       fileType = 'image/jpg';
-//     }
-//     return fileType;
-//   };

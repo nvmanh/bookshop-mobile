@@ -1,10 +1,3 @@
-/**
- * @author Leo
- * @email xinlichao2016@gmail.com
- * @create date 2019-09-03 10:03:20
- * @modify date 2019-09-03 10:03:20
- * @desc 配置 redux
- */
 import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import logger from 'redux-logger';
@@ -20,9 +13,9 @@ const middlewares: any = [sagaMiddleware];
 //   middlewares.push(logger);
 // }
 
-// debug 显示logger
+// debug logger
 if (BaseConfig.sagaLogger) {
-  // 创建中间件 logger
+  // logger
   middlewares.push(logger);
 }
 

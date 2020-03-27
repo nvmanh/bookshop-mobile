@@ -1,10 +1,3 @@
-/**
- * @author Leo
- * @email xinlichao2016@gmail.com
- * @create date 2019-09-03 10:07:25
- * @modify date 2019-09-03 10:07:25
- * @desc 登录验证 （未用到，在首页做控制）
- */
 import React, { useState, useEffect } from 'react';
 import { View, StatusBar, StyleSheet } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
@@ -48,14 +41,13 @@ const AuthLoading = ({ onSuccess, onFailure }: Props) => {
 
   return (
     <View style={styles.container}>
-      {/* <ActivityIndicator toast text="正在加载..." size="large" animating /> */}
       {token ? (
-        <ActivityIndicator text="启动中..." size="large" animating />
+        <ActivityIndicator text="loading..." size="large" animating />
       ) : (
         <WingBlank>
           <WhiteSpace />
           <Button type="primary" onPress={() => onFailure()}>
-            去登陆
+            Go to login
           </Button>
           <WhiteSpace />
         </WingBlank>

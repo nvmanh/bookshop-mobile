@@ -13,7 +13,7 @@ const config = {
       }
     });
     return {
-      preloadedModules: moduleMap,   // 配置预加载模块
+      preloadedModules: moduleMap,   //Configure preloaded modules
       transform: { inlineRequires: { blacklist: moduleMap } },
     };
   },

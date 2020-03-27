@@ -1,19 +1,13 @@
-/**
- * @author Leo
- * @email xinlichao2016@gmail.com
- * @create date 2019-09-03 10:09:28
- * @modify date 2019-09-03 10:09:28
- * @desc List Demo
- */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { View, Text, Platform, Dimensions, StyleSheet } from 'react-native';
+import { View, Text, Platform, Dimensions, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import {
   WhiteSpace,
   ListView,
   Flex,
   Toast,
   Portal,
+  List
 } from '@ant-design/react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import moment from 'moment';
@@ -21,6 +15,8 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 import CommonEmptyView from '../../components/CommonEmptyView';
 import CommonTouchable from '../../components/CommonTouchable';
 import { RootState } from '../../store/types';
+import actions, { book, Book } from '../../store/home/actions';
+import { fetchService } from '../../store/fetchService';
 
 const { width: WIDTH, height: HEIGHT } = Dimensions.get('window');
 
@@ -28,117 +24,127 @@ let _loadKey: number | null = null;
 let _abortFetch: (() => void) | null = null;
 
 const Page = () => {
-  let listViewRef: any = null;
+  // const listViewRef = useRef<?>(null);
   const dispatch = useDispatch();
 
-  // const fetchList = useSelector((state: RootState) => state.list.fetchList);
-  // const lastRefreshTime = useSelector((state: RootState) => state.list.listLastRefreshTime);
+  const fetchList = useSelector((state: RootState) => state.home.fetchBook);
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
 
-  // useEffect(() => {
-  //   // handleStatusChang
-  //   if (fetchList.loading) {
-  //     if (currentPage === 1) {
-  //       _loadKey && Portal.remove(_loadKey);
-  //       _loadKey = Toast.loading('加载中...', 0);
-  //     }
-  //   } else {
-  //     _loadKey && Portal.remove(_loadKey);
-  //   }
-  //   if (fetchList.error) {
-  //     Toast.fail(fetchList.message || '');
-  //     if (_abortFetch) {
-  //       _abortFetch();
-  //     }
-  //   }
-  //   if (fetchList.data) {
-  //     // onBack();
-  //   }
-  // }, [fetchList]);
+  const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  // const [page] = useState(1);
+  const [totalPage, setTotalPage] = useState(0);
+  const [title, setTitle] = useState('');
+  const [bookData, setBookData] = useState([]);
 
-  // useEffect(() => {
-  //   if (listViewRef) {
-  //     listViewRef.refresh();
-  //   }
-  // }, [lastRefreshTime]);
+  const flastListRef = useRef<FlatList<Book>>(null);
 
-  const onFetch = async (page = 1, startFetch: any, abortFetch: any) => {
-    _abortFetch = abortFetch;
-    try {
-      setCurrentPage(page);
-      const pageLimit = 10;
-      const skip = (page - 1) * pageLimit;
-      let rowData = Array.from({ length: pageLimit }, (value, index) => {
-        return {
-          id: index,
-          time: moment().format('YYYY-MM-DD hh:mm:ms'),
-        };
-      });
-      if (page === 10) {
-        rowData = [];
+  useEffect(() => {
+    // handleStatusChange
+    if (fetchList.loading) {
+      if (currentPage === 0) {
+        _loadKey && Portal.remove(_loadKey);
+        _loadKey = Toast.loading('loading...', 0);
       }
-      // await sleep(1000);
-      startFetch(rowData, pageLimit);
-    } catch (err) {
-      abortFetch();
+    } else {
+      _loadKey && Portal.remove(_loadKey);
     }
-  };
+    if (fetchList.error) {
+      setLoading(false);
+      Toast.fail(fetchList.message || '');
+      if (_abortFetch) {
+        _abortFetch();
+      }
+    }
+    if (fetchList.data) {
+      const { content, totalPages } = fetchList.data;
+      setBookData(content);
+      setTotalPage(totalPages);
+      setRefreshing(false);
+      setLoading(false);
+    }
+  }, [fetchList]);
+
+  const fetchData = () => {
+    setLoading(true);
+    dispatch(book({ pageNo: currentPage, pageSize: 10, descending: true }))
+  }
+
+  const renderHeader = () => {
+    return (
+      <Text style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 20, marginBottom: 10 }}>
+        `Test`
+      </Text>
+    );
+  }
+
+  const renderFooter = () => {
+    console.log("loading >>>>>>", loading);
+
+    if (!loading) {
+      return (<View></View>);
+    }
+    return (
+      <View
+        style={{
+          paddingVertical: 20,
+          borderTopWidth: 1,
+          borderColor: '#CED0CE'
+        }}
+      >
+        <ActivityIndicator animating size='large' />
+      </View>
+    );
+  }
+
+  const handleRefresh = () => {
+    setCurrentPage(1);
+    fetchData();
+  }
+
+  const handleLoadMore = () => {
+    if (currentPage < totalPage) {
+      setCurrentPage(currentPage + 1);
+      fetchData();
+    } else {
+      setLoading(false);
+    }
+  }
 
   const onPressItem = (item: any): void => {
     console.log(item);
   };
 
   const renderPaginationFetchingView = () => {
-    if (currentPage === 1) {
+    if (currentPage === 0) {
       return null;
     }
-    return <LoadingSpinner height={HEIGHT * 0.2} text="加载中..." />;
+    return <LoadingSpinner height={HEIGHT * 0.2} text="loading..." />;
   };
 
-  const renderItem = (item: any) => {
+  const renderItem = (item: Book) => {
     return (
-      <CommonTouchable
-        style={styles.itemContainer}
-        onPress={() => onPressItem(item)}
-      >
-        <Flex direction="column" align="start">
-          <Flex>
-            <Flex.Item>
-              <Text style={{ color: '#131313' }}>{item.time}</Text>
-            </Flex.Item>
-          </Flex>
-        </Flex>
-      </CommonTouchable>
+      <List.Item extra={item.price} arrow="horizontal" onPress={() => { }}>{item.name}</List.Item>
     );
   };
 
   return (
     <View style={styles.container}>
-      <ListView
-        ref={ref => { listViewRef = ref }}
-        key="list"
-        onFetch={onFetch}
-        keyExtractor={(item, index) => `${index} - ${item}`}
-        refreshableMode="advanced"
-        renderItem={renderItem}
-        numColumns={1}
-        // ----Extra Config----
-        // header={renderHeader}
-        paginationFetchingView={renderPaginationFetchingView}
-        // not supported on FlatList
-        // sectionHeaderView={renderSectionHeaderView}
-        // paginationFetchingView={this.renderPaginationFetchingView}
-        // paginationAllLoadedView={this.renderPaginationAllLoadedView}
-        // paginationWaitingView={this.renderPaginationWaitingView}
-        emptyView={CommonEmptyView}
-        // separator={renderSeparatorView}
 
-        arrowImageStyle={{ width: 20, height: 20, resizeMode: 'contain' }}
-        refreshViewStyle={
-          Platform.OS === 'ios' ? { height: 80, top: -80 } : { height: 80 }
-        }
-        refreshViewHeight={80}
+      <FlatList<Book>
+        ref={flastListRef}
+        data={bookData}
+        keyExtractor={item => `${item.id}`}
+        // ListHeaderComponent={renderHeader}
+        ListFooterComponent={renderFooter}
+        renderItem={({ item }) => {
+          return renderItem(item);
+        }}
+        onRefresh={handleRefresh}
+        refreshing={refreshing}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={50}
       />
     </View>
   );

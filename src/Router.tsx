@@ -1,10 +1,3 @@
-/**
- * @author Leo
- * @email xinlichao2016@gmail.com
- * @create date 2019-09-03 10:28:51
- * @modify date 2019-09-03 10:28:51
- * @desc App 路由声明配置
- */
 import React from 'react';
 import { BackHandler, StyleSheet, View, Text } from 'react-native';
 import {
@@ -35,16 +28,18 @@ import Signup from './views/auth/Signup';
 import Home from './views/home';
 import Me from './views/me';
 
-// 按需加载
+// create signin
 const SigninComponent = React.lazy(() => import('./views/auth/Signin'));
 // const Signup = React.lazy(() => import('./views/auth/Signup'));
 // const Home = React.lazy(() => import('./views/home'));
 // const Me = React.lazy(() => import('./views/me'));
-const Signin = (...rest: any) => (
-  <React.Suspense fallback={<Text>Loading...</Text>}>
-    <SigninComponent {...rest} />
-  </React.Suspense>
-);
+// const Signin = (...rest: any) => (
+//   <React.Suspense fallback={<Text>Loading...</Text>}>
+//     <SigninComponent {...rest} />
+//   </React.Suspense>
+// );
+
+import Signin from "./views/auth/Signin";
 
 // https://github.com/aksonov/react-native-router-flux/issues/2741
 // https://github.com/react-navigation/react-navigation/issues/1759
@@ -70,13 +65,13 @@ const backAndroidHandler = () => {
     BackHandler.exitApp();
   } else {
     backButtonPressedOnceToExit = true;
-    Toast.info('再按一次退出', 1.5);
+    Toast.info('Exit application', 1.5);
 
     setTimeout(() => {
       backButtonPressedOnceToExit = false;
     }, 2000);
   }
-  return true; // 阻止默认退出App行为
+  return true; // Exit app
 };
 
 const isLoggedIn = async () => {
@@ -97,7 +92,7 @@ const isLoggedIn = async () => {
 
 // Actions.popTo('home');
 // Actions.replace('home');
-// tab 跳转请使用jump
+// tab home jump
 // Actions.jump('home')
 
 const RouterConfig = () => (
@@ -157,12 +152,13 @@ const RouterConfig = () => (
               />
               <Scene
                 key="me"
-                title="我的"
-                tabBarLabel="我的"
+                title="Profile"
+                tabBarLabel="Profile"
                 iconName="user"
                 icon={TabIcon}
                 hideNavBar
                 component={Me}
+
                 openSignin={() => callOnceInInterval(() => Actions.login())}
               />
             </Tabs>
@@ -181,7 +177,7 @@ const RouterConfig = () => (
           <Scene
             key="signin"
             component={Signin}
-            title="登录"
+            title="Login"
             panHandlers={null}
             duration={1}
             hideNavBar={true}
@@ -192,13 +188,12 @@ const RouterConfig = () => (
           <Scene
             key="signup"
             component={Signup}
-            title="注册"
+            title="Register"
             panHandlers={null}
             duration={1}
             back
-            onBack={() => {
-              Actions.pop();
-            }}
+            onBack={() => { Actions.pop() }}
+            onBackToSignIn={() => { Actions.pop() }}
           />
         </Stack>
       </Modal>

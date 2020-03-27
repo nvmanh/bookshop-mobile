@@ -1,10 +1,3 @@
-/**
- * @author Leo
- * @email xinlichao2016@gmail.com
- * @create date 2019-09-03 10:09:41
- * @modify date 2019-09-03 10:09:41
- * @desc 我的页面
- */
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -15,7 +8,13 @@ import {
   StyleSheet,
   Platform,
 } from 'react-native';
-import { Button } from '@ant-design/react-native';
+import {
+  Toast,
+  Portal,
+  Button,
+  WhiteSpace,
+  WingBlank,
+} from '@ant-design/react-native';
 import CommonTouchable from '../../components/CommonTouchable';
 import { logout } from '../../store/actions';
 import { RootState } from '../../store/types';
@@ -23,6 +22,9 @@ import { RootState } from '../../store/types';
 export interface Props {
   openSignin: () => void;
 }
+
+let _loadKey: any = null;
+
 const Page = ({ openSignin }: Props) => {
   const dispatch = useDispatch();
 
@@ -33,10 +35,28 @@ const Page = ({ openSignin }: Props) => {
     name = fetchUserInfo.data.name;
   }
 
+  const fetchLogOut = useSelector((state: RootState) => state.auth.fetchLogout);
+
   useEffect(() => {
     // componentDidMount
     // dispatch(initializeApp());
-  }, []);
+    if (fetchLogOut.loading) {
+      _loadKey && Portal.remove(_loadKey);
+      _loadKey = Toast.loading('登录中...', 0);
+    } else {
+      _loadKey && Portal.remove(_loadKey);
+    }
+    if (fetchLogOut.error) {
+      Toast.fail(fetchLogOut.message || '');
+      // dispatch(resetAuthStatus());
+    }
+    if (fetchLogOut.data) {
+      // onBack();
+      // onBackToHome();
+      openSignin();
+    }
+
+  }, [fetchLogOut]);
 
   const _logout = () => {
     dispatch(logout());

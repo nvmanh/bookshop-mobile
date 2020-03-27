@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Android 打包
+# Android 
 #
 
 WORK_PATH=$(cd "$(dirname "$0")"; pwd)

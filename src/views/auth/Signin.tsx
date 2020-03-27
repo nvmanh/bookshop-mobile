@@ -1,11 +1,4 @@
-/**
- * @author Leo
- * @email xinlichao2016@gmail.com
- * @create date 2019-09-03 10:07:40
- * @modify date 2019-09-03 10:07:40
- * @desc 登录页
- */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { AsyncTuple } from 'iron-redux';
 import {
@@ -18,7 +11,9 @@ import {
   TouchableOpacity,
   ImageBackground,
   Platform,
-  BackHandler
+  BackHandler,
+  KeyboardAvoidingView,
+  Keyboard
 } from 'react-native';
 import {
   Toast,
@@ -26,6 +21,7 @@ import {
   Button,
   WhiteSpace,
   WingBlank,
+  Modal
 } from '@ant-design/react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 // import BackButton from '../../components/BackButton';
@@ -50,6 +46,7 @@ const SignInPage = ({ onBack, onBackToHome }: Props) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [seePwd, setSeePwd] = useState(false);
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
   const fetchSignIn = useSelector((state: RootState) => state.auth.fetchSignIn);
   useEffect(
@@ -67,16 +64,10 @@ const SignInPage = ({ onBack, onBackToHome }: Props) => {
 
   useEffect(() => {
     const backAction = () => {
-      // Alert.alert("Hold on!", "Are you sure you want to go back?", [
-      //   {
-      //     text: "Cancel",
-      //     onPress: () => null,
-      //     style: "cancel"
-      //   },
-      //   { text: "YES", onPress: () => BackHandler.exitApp() }
-      // ]);
-      // onExit()
-      BackHandler.exitApp();
+      Modal.alert("Exit app", "Do you want to quit app now?", [
+        { text: 'Cancel', style: 'default' },
+        { text: 'Yes', onPress: () => BackHandler.exitApp() }
+      ])
       return true;
     };
 
@@ -93,10 +84,24 @@ const SignInPage = ({ onBack, onBackToHome }: Props) => {
   }, []);
 
   useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardVisible(true);
+    });
+
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false);
+    });
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    }
+  }, []);
+
+  useEffect(() => {
     // handleStatusChange
     if (fetchSignIn.loading) {
       _loadKey && Portal.remove(_loadKey);
-      _loadKey = Toast.loading('登录中...', 0);
+      _loadKey = Toast.loading('loading...', 0);
     } else {
       _loadKey && Portal.remove(_loadKey);
     }
@@ -113,91 +118,96 @@ const SignInPage = ({ onBack, onBackToHome }: Props) => {
   const onSignInPress = () => {
     if (!username) {
       setTimeout(() => {
-        Toast.fail('请输入用户名');
+        Toast.fail('Username can not be empty');
       }, 1);
       return;
     }
     if (!password) {
-      Toast.info('请输入密码');
+      Toast.info('Password can not be empty');
       return;
     }
     dispatch(signIn({ username, password }));
   };
 
+  const textRef = useRef<TextInput>(null);
+
   return (
     <View style={{ flexDirection: 'column', flex: 1 }}>
-      <ScrollView style={styles.wrapper} keyboardDismissMode="interactive">
-        <View style={styles.logoWrapper}>
-          <Image
-            style={styles.logo}
-            source={require('../../assets/images/logo.jpeg')}
-          />
-        </View>
-        <View style={styles.main}>
-          <View style={styles.inputWrap}>
-            <Text style={{ color: '#393939', fontSize: 16, width: 85 }}>
-              用户名
-          </Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={text => setUsername(text)}
-              defaultValue={username}
-              placeholder="请输入用户名"
-              maxLength={30}
-              // keyboardType="numeric"
-              placeholderTextColor="#a6a6a6"
-              underlineColorAndroid="transparent"
-            />
-          </View>
-          <View style={styles.inputWrap}>
-            <Text style={{ color: '#393939', fontSize: 16, width: 85 }}>
-              密&nbsp;&nbsp;&nbsp;&nbsp;码
-          </Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={text => setPassword(text)}
-              defaultValue={password}
-              secureTextEntry={!seePwd}
-              placeholder="请输入密码"
-              maxLength={20}
-              placeholderTextColor="#a6a6a6"
-              underlineColorAndroid="transparent"
-            />
-            <TouchableOpacity
-              onPress={() => setSeePwd(!seePwd)}
-              style={styles.seePwdBtn}
-            >
-              <Icon
-                name={seePwd ? 'eye' : 'eye-slash'}
-                size={20}
-                style={{ color: '#9E9FA0' }}
+      <ScrollView contentContainerStyle={styles.wrapper} keyboardDismissMode="interactive">
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
+          <View style={{ flex: 1, justifyContent: 'flex-start' }}>
+            <View style={styles.logoWrapper}>
+              <Image
+                style={styles.logo}
+                source={require('../../assets/images/logo.jpeg')}
               />
-            </TouchableOpacity>
+            </View>
+            <View style={styles.main}>
+              <View style={styles.inputWrap}>
+                <Text style={{ color: '#393939', fontSize: 16, width: 85 }}>
+                  Username
+                </Text>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={text => setUsername(text)}
+                  defaultValue={username}
+                  placeholder="Input text..."
+                  maxLength={30}
+                  returnKeyType="next"
+                  onSubmitEditing={() => textRef.current!.focus()}
+                  // keyboardType="numeric"
+                  placeholderTextColor="#a6a6a6"
+                  underlineColorAndroid="transparent"
+                />
+              </View>
+              <View style={styles.inputWrap}>
+                <Text style={{ color: '#393939', fontSize: 16, width: 85 }}>
+                  Password
+                </Text>
+                <TextInput
+                  style={styles.input}
+                  ref={textRef}
+                  onChangeText={text => setPassword(text)}
+                  defaultValue={password}
+                  secureTextEntry={!seePwd}
+                  placeholder="Input text..."
+                  returnKeyType="go"
+                  maxLength={20}
+                  onSubmitEditing={() => onSignInPress()}
+                  placeholderTextColor="#a6a6a6"
+                  underlineColorAndroid="transparent"
+                />
+                <TouchableOpacity
+                  onPress={() => setSeePwd(!seePwd)}
+                  style={styles.seePwdBtn}
+                >
+                  <Icon
+                    name={seePwd ? 'eye' : 'eye-slash'}
+                    size={20}
+                    style={{ color: '#9E9FA0' }}
+                  />
+                </TouchableOpacity>
+              </View>
+              <WingBlank>
+                <WhiteSpace size='xl' />
+                <WhiteSpace size='xl' />
+                <Button type="primary" onPress={() => onSignInPress()}>
+                  Login
+                </Button>
+                <WhiteSpace />
+              </WingBlank>
+            </View>
           </View>
-          {/* <TouchableOpacity
-          style={styles.btn}
-          onPress={onSignInPress}
-          textStyle={styles.btnText}
-        >
-          <Text>登录</Text>
-        </TouchableOpacity> */}
-
-
-          <WingBlank>
-            <WhiteSpace size='xl' />
-            <WhiteSpace size='xl' />
-            <Button type="primary" onPress={() => onSignInPress()}>
-              登陆
-          </Button>
-            <WhiteSpace />
-          </WingBlank>
-        </View>
-
+          {!isKeyboardVisible && (
+            <View style={{ flex: 1, justifyContent: "flex-end" }}>
+              <TouchableOpacity style={styles.bottomView} onPress={() => onSignUpPress()}>
+                <Text>Have not account yet</Text>
+                <Text>Register</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </KeyboardAvoidingView>
       </ScrollView>
-      <TouchableOpacity style={styles.bottomView} onPress={() => onSignUpPress()}>
-        <Text>Have not account yet</Text>
-        <Text>Register</Text>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -206,6 +216,10 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+  },
+  contentWrapper: {
+    flex: 1,
+    justifyContent: 'space-between'
   },
   navBar: {
     flex: 1,
@@ -226,7 +240,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   logoWrapper: {
-    flex: 1,
     marginTop: 35,
     alignItems: 'center',
   },
@@ -305,7 +318,6 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute', //Here is the trick
     bottom: 50, //Here is the trick
   },
   textStyle: {

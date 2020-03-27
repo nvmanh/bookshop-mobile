@@ -1,12 +1,4 @@
-/**
- * @author Leo
- * @email xinlichao2016@gmail.com
- * @create date 2019-09-03 10:28:23
- * @modify date 2019-09-03 10:28:23
- * @desc App 入口
- */
-
-// 禁用黄屏
+// disable warning dialog
 console.disableYellowBox = true;
 
 
@@ -32,7 +24,7 @@ const myErrorHandler = (e : any, isFatal: any) => {
 
 
 
-// 生产环境拦截全局异常，避免出现错误闪退。
+// config debug mode to handle all errors
 if (!__DEV__) {
   // require('ErrorUtils').setGlobalHandler((err: any) => {
   //   console.log(err);

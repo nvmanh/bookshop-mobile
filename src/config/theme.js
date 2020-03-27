@@ -1,11 +1,3 @@
-/**
- * @author Leo
- * @email xinlichao2016@gmail.com
- * @create date 2019-09-03 09:53:53
- * @modify date 2019-09-03 09:53:53
- * @desc 自定义 ant-design 主题样式 (注意不要使用TS, 使用node执行)
- * https://github.com/ant-design/antd-mobile-samples/tree/master/rn-custom-ui#antd-mobile-with-rn-custom-ui
- */
 
 /*eslint-disable */
 Object.defineProperty(exports, '__esModule', {
@@ -16,13 +8,11 @@ Object.defineProperty(exports, '__esModule', {
 let brandPrimary = '#3D7EFF';
 let brandPrimaryTap = '#1284d6'
 exports.default = {
-  // 支付宝钱包默认主题
   // https://github.com/ant-design/ant-design-mobile/wiki/设计变量表及命名规范
-  // 色彩, NOTE: must use `#000000` instead of `#000`
+  // NOTE: must use `#000000` instead of `#000`
   // https://facebook.github.io/react-native/docs/colors.html
   // 8-digit-hex to 4-digit hex https://css-tricks.com/8-digit-hex-codes/
   // https://www.chromestatus.com/feature/5685348285808640 chrome will support `#RGBA`
-  // 文字色
   color_text_base: '#000000',
   color_text_base_inverse: '#ffffff',
   color_text_secondary: '#a4a9b0',
@@ -31,7 +21,7 @@ exports.default = {
   color_text_caption: '#888888',
   color_text_paragraph: '#333333',
   color_link: brandPrimary,
-  // 背景色
+  // Background color
   fill_base: '#ffffff',
   fill_body: '#f5f5f9',
   fill_tap: '#dddddd',
@@ -39,9 +29,9 @@ exports.default = {
   fill_mask: 'rgba(0, 0, 0, .4)',
   color_icon_base: '#cccccc',
   fill_grey: '#f7f7f7',
-  // 透明度
+  // transparency
   opacity_disabled: '0.3',
-  // 全局/品牌色
+  // Global / Brand Color
   brand_primary: brandPrimary,
   brand_primary_tap: brandPrimaryTap,
   brand_success: '#6abf47',
@@ -49,9 +39,9 @@ exports.default = {
   brand_error: '#f4333c',
   brand_important: '#ff5b05',
   brand_wait: '#108ee9',
-  // 边框色
+  // Border color
   border_color_base: '#dddddd',
-  // 字体尺寸
+  // Font size
   // ---
   font_size_icontext: 10,
   font_size_caption_sm: 12,
@@ -59,44 +49,44 @@ exports.default = {
   font_size_subhead: 15,
   font_size_caption: 16,
   font_size_heading: 17,
-  // 圆角
+  // Fillet
   // ---
   radius_xs: 2,
   radius_sm: 3,
   radius_md: 5,
   radius_lg: 7,
-  // 边框尺寸
+  // Border size
   // ---
   border_width_sm: 0.5,
   border_width_md: 1,
   border_width_lg: 2,
-  // 间距
+  // spacing
   // ---
-  // 水平间距
+  // Horizontal spacing
   h_spacing_sm: 5,
   h_spacing_md: 8,
   h_spacing_lg: 15,
-  // 垂直间距
+  // Vertical spacing
   v_spacing_xs: 3,
   v_spacing_sm: 6,
   v_spacing_md: 9,
   v_spacing_lg: 15,
   v_spacing_xl: 21,
-  // 高度
+  // height
   // ---
   line_height_base: 1,
   line_height_paragraph: 1.5,
-  // 图标尺寸
+  // Icon size
   // ---
   icon_size_xxs: 15,
   icon_size_xs: 18,
   icon_size_sm: 21,
   icon_size_md: 22,
   icon_size_lg: 36,
-  // 动画缓动
+  // Animation easing
   // ---
   ease_in_out_quint: 'cubic_bezier(0.86, 0, 0.07, 1)',
-  // 组件变量
+  // Component variables
   // ---
   actionsheet_item_height: 50,
   actionsheet_item_font_size: 18,

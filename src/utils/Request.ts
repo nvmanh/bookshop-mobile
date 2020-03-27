@@ -1,10 +1,3 @@
-/**
- * @author Leo
- * @email xinlichao2016@gmail.com
- * @create date 2019-09-03 10:07:01
- * @modify date 2019-09-03 10:07:01
- * @desc 请求工具类，配置 axios
- */
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 import Network from '../config/Network';
@@ -21,6 +14,10 @@ const service = axios.create({
   baseURL: Network.API_ROOT_DOMAIN, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: BaseConfig.timeoutMS, // request timeout
+  headers: {
+    'Content-Type': 'application/json',
+  }
+  
 });
 
 // request interceptor
@@ -36,6 +33,7 @@ service.interceptors.request.use(
       // please modify it according to the actual situation
       // eslint-disable-next-line require-atomic-updates
       config.headers['X-Authorization'] = token;
+      config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;
   },
@@ -76,18 +74,9 @@ service.interceptors.response.use(
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
         // to re-login
-        // alert('您已经注销，您可以取消以停留在此页面');
-        // MessageBox.confirm('您已经注销，您可以取消以停留在此页面，或再次登录', '确认注销', {
-        //   confirmButtonText: '重新登录',
-        //   cancelButtonText: '取消',
-        //   type: 'warning'
-        // }).then(() => {
-        //   store.dispatch('user/resetToken').then(() => {
-        //     location.reload();
-        //   });
-        // });
+        
       }
-      // 在 Fetch Middleware 中处理异常
+      // Handle exception in middleware
       // return Promise.reject(new Error(res.msg || res.message || 'Error'));
     }
     return res;
@@ -96,18 +85,11 @@ service.interceptors.response.use(
     const err = error;
     console.log(`err${err}`); // for debug
     if (err.message === 'Network Error') {
-      // alert('请检查您的网络');
-      err.message = '请检查您的网络';
+      err.message = 'Network error, please check and try again';
     } else {
-      err.message = '请求异常, 请稍后重试';
+      err.message = 'Server error, please try again later';
       // alert(err.message);
     }
-    // BaseConfig.timeoutMessage
-    // Message({
-    //   message: err.message,
-    //   type: 'error',
-    //   duration: 5 * 1000
-    // });
     return Promise.reject(err);
   }
 );

@@ -1,10 +1,3 @@
-/**
- * @author Leo
- * @email xinlichao2016@gmail.com
- * @create date 2019-09-03 09:50:00
- * @modify date 2019-09-03 09:50:00
- * @desc 通用可点击容器
- */
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'react-native-button';
@@ -13,7 +6,7 @@ const ACTIVE_OPACITY = 0.5;
 
 const defaultProps = {
   interval: 350,
-  callOnce: true, // interval 内 只调用一次，避免用户快速点击出现的种种问题.
+  callOnce: true, // interval Called only once, to avoid the problems that users click quickly.
   onPress: () => {}
 };
 
@@ -36,7 +29,6 @@ type Props = {
 interface State {}
 
 /**
- * 通用按钮
  * param style
  * param textStyle
  * param buttonTheme
@@ -46,7 +38,7 @@ export default class CommonTouchable extends PureComponent<Props, State> {
   public static defaultProps = defaultProps;
   // public static defaultProps: Partial<Props> = {
   //   interval: 350,
-  //   callOnce: true, // interval 内 只调用一次，避免用户快速点击出现的种种问题.
+  //   callOnce: true, 
   //   onPress: () => {},
   // }
 
@@ -65,7 +57,7 @@ export default class CommonTouchable extends PureComponent<Props, State> {
       return;
     }
     const clickTime = Date.now();
-    // 350 的时间可以延长，根据需要改变
+    // handle double click
     if (
       !this.lastClickTime ||
       Math.abs(this.lastClickTime - clickTime) > interval

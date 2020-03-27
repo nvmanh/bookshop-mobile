@@ -1,10 +1,3 @@
-/**
- * @author Leo
- * @email xinlichao2016@gmail.com
- * @create date 2019-09-03 10:01:12
- * @modify date 2019-09-03 10:01:12
- * @desc Auth Api请求，业务处理。
- */
 import { takeLatest, call, put } from 'redux-saga/effects';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Toast, Portal } from '@ant-design/react-native';
@@ -32,7 +25,6 @@ function* signInService(action: ReturnType<typeof signIn>) {
     }
   } catch (error) {
     console.log('service', error);
-    // 处理异常
     // yield put({ type: API_TYPES.SIGN_IN_FAILURE, payload: { errorMessage: error.message } });
   }
 }
@@ -50,6 +42,10 @@ function* signUpService(action: ReturnType<typeof signUp>) {
     // const api = actions.fetchSignIn()
     const res: typeof api.payload = yield* fetchService(api);
     if (res) {
+      const { data } = res;
+      // console.log(">>>>>>>>>>>>>>>>>>> ", data);
+      // yield put(actions.registerUserSuccess(data))
+
       // const { data: token } = res;
       // yield AsyncStorage.setItem(CUSTOMER_TOKEN, token);
       // yield put(actions.changeToken(token));
@@ -59,13 +55,12 @@ function* signUpService(action: ReturnType<typeof signUp>) {
     }
   } catch (error) {
     console.log('service', error);
-    // 处理异常
     // yield put({ type: API_TYPES.SIGN_IN_FAILURE, payload: { errorMessage: error.message } });
   }
 }
 
 function* logoutService(action: ReturnType<typeof logout>) {
-  const loadKey = Toast.loading('加载中...', 0);
+  const loadKey = Toast.loading('loading...', 0);
   try {
     const api = actions.fetchLogout();
     const res: typeof api.payload = yield* fetchService(api);
@@ -73,10 +68,12 @@ function* logoutService(action: ReturnType<typeof logout>) {
       yield AsyncStorage.removeItem(CUSTOMER_TOKEN);
       yield put(actions.changeToken(''));
       Portal.remove(loadKey);
-      Toast.success('已注销', 1.5);
+      Toast.success('Success', 1.5);
     }
   } catch (error) {
     Portal.remove(loadKey);
+    yield AsyncStorage.removeItem(CUSTOMER_TOKEN);
+    yield put(actions.changeToken(''));
     console.log('service', error);
   }
 }
