@@ -42,7 +42,7 @@ const Page = ({ openSignin }: Props) => {
     // dispatch(initializeApp());
     if (fetchLogOut.loading) {
       _loadKey && Portal.remove(_loadKey);
-      _loadKey = Toast.loading('登录中...', 0);
+      _loadKey = Toast.loading('Loading...', 0);
     } else {
       _loadKey && Portal.remove(_loadKey);
     }
@@ -79,7 +79,7 @@ const Page = ({ openSignin }: Props) => {
                   onPress={() => openSignin()}
                   style={{ paddingVertical: 20, paddingHorizontal: 30 }}
                 >
-                  <Text style={{ color: '#777777' }}>去登陆</Text>
+                  <Text style={{ color: '#777777' }}>Disable</Text>
                 </CommonTouchable>
               ) : (
                 <Text style={{ color: '#777777' }}>{name}</Text>
@@ -91,7 +91,7 @@ const Page = ({ openSignin }: Props) => {
           {
             token ? (
               <Button type="primary" onPress={() => _logout()}>
-                注销
+                Logout
               </Button>
             ) : null
           }
