@@ -19,7 +19,7 @@
     "@ant-design/icons-react-native": "^2.0.0",
     "@ant-design/react-native": "^3.3.0",
     "@react-native-community/async-storage": "^1.8.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "immutable": "^4.0.0-rc.12",
     "iron-redux": "^0.2.7",
     "lodash": "^4.17.15",
