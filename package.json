@@ -22,7 +22,7 @@
     "axios": "^0.19.2",
     "immutable": "^4.0.0-rc.12",
     "iron-redux": "^0.2.7",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "moment": "^2.24.0",
     "patch-package": "^6.2.1",
     "prop-types": "^15.7.2",
